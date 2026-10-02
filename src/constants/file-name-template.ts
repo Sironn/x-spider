@@ -77,12 +77,12 @@ export const REPLACER_MAP: Record<
     replacer: R.path(['post', 'id']),
   },
   POST_TIME: {
-    desc: '推文发布日期',
+    desc: '推文发布日期(本地)',
     replacer: (data, params) => {
       if (!data.post.createdAt) return '未知日期';
       const dateOnly = params.d ? params.d === '1' : false;
       return data.post.createdAt.format(
-        dateOnly ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH-mm-ss',
+        dateOnly ? 'YYYY-MM-DD' : 'YYYY-MM-DD HHːmmːss',
       );
     },
     params: [
@@ -94,12 +94,12 @@ export const REPLACER_MAP: Record<
     ],
   },
   POST_TIME_UTC: {
-    desc: '推文发布日期（UTC）',
+    desc: '推文发布日期(UTC)',
     replacer: (data, params) => {
       if (!data.post.createdAt) return '未知日期';
       const dateOnly = params.d ? params.d === '1' : false;
       return data.post.createdAt.utc().format(
-        dateOnly ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH-mm-ss',
+        dateOnly ? 'YYYY-MM-DD' : 'YYYY-MM-DD HHːmmːss',
       );
     },
     params: [
