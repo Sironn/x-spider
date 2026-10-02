@@ -5,6 +5,7 @@ mod network;
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_window_state::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
           network::network_fetch,
           network::network_get_system_proxy_url,
