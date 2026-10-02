@@ -6,7 +6,10 @@ import { FileNameTemplateData } from '../interfaces/FileNameTemplateData';
 import MediaType from '../enums/MediaType';
 import { getDownloadUrl } from '../twitter/utils';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { unicodeSubstring } from '../utils/unicode';
+
+dayjs.extend(utc);
 
 export const EXAMPLE_USER: Required<TwitterUser> = {
   avatar:
@@ -79,6 +82,23 @@ export const REPLACER_MAP: Record<
       if (!data.post.createdAt) return '未知日期';
       const dateOnly = params.d ? params.d === '1' : false;
       return data.post.createdAt.format(
+        dateOnly ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH-mm-ss',
+      );
+    },
+    params: [
+      {
+        name: 'd',
+        desc: '仅日期（0 或 1）',
+        default: '0',
+      },
+    ],
+  },
+  POST_TIME_UTC: {
+    desc: '推文发布日期（UTC）',
+    replacer: (data, params) => {
+      if (!data.post.createdAt) return '未知日期';
+      const dateOnly = params.d ? params.d === '1' : false;
+      return data.post.createdAt.utc().format(
         dateOnly ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH-mm-ss',
       );
     },
