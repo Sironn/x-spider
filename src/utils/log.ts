@@ -9,7 +9,7 @@ const DEFAULT_CATEGORY = 'APP';
 export class Logger implements ILogger {
   #now = dayjs();
   #logFileBuffers: string[] = [];
-  #logFileTimeoutId: number | undefined;
+  #logFileTimeoutId: ReturnType<typeof setTimeout> | undefined;
 
   info(...messages: any[]) {
     this.#log('INFO', DEFAULT_CATEGORY, ...messages);
