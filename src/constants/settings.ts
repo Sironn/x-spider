@@ -10,7 +10,7 @@ export const DEFAULT_SETTINGS: Settings = {
     saveDirBase: '',
     dirTemplate: '%USER_SCREEN_NAME%',
     fileNameTemplate:
-      '%POST_TIME% %USER_SCREEN_NAME% %POST_ID%-%MEDIA_INDEX%%EXT%',
+      '%USER_SCREEN_NAME% [%POST_TIME%] %POST_ID%_%MEDIA_INDEX%%EXT%',
     sameFileSkip: true,
   },
   app: {
