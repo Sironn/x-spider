@@ -4,7 +4,7 @@ export const DEFAULT_SETTINGS: Settings = {
   proxy: {
     enable: true,
     url: 'http://127.0.0.1:7890',
-    useSystem: true,
+    useSystem: false,
   },
   download: {
     saveDirBase: '',
@@ -13,8 +13,6 @@ export const DEFAULT_SETTINGS: Settings = {
     sameFileSkip: true,
   },
   app: {
-    autoCheckUpdate: true,
-    acceptPrerelease: false,
     writeLogs: false,
   },
 };
