@@ -8,9 +8,8 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   download: {
     saveDirBase: '',
-    dirTemplate: '',
-    fileNameTemplate:
-      '%POST_TIME% %USER_SCREEN_NAME% %POST_ID%-%MEDIA_INDEX%%EXT%',
+    dirTemplate: '%USER_SCREEN_NAME%',
+    fileNameTemplate: '%USER_SCREEN_NAME% [%POST_TIME%] %POST_ID%_%MEDIA_INDEX%%EXT%',
     sameFileSkip: true,
   },
   app: {

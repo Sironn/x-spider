@@ -8,6 +8,7 @@ import Joi from 'joi';
 import { SavePathSelector } from '../components/settings/SavePathSelector';
 import { Button, Input, Switch } from 'antd';
 import { FileNameTemplateInput } from '../components/settings/FileNameTemplateInput';
+import { VariablePicker } from '../components/settings/VariablePicker';
 import { showInFolder } from '../utils/shell';
 import { path } from '@tauri-apps/api';
 
@@ -72,6 +73,7 @@ export const Settings: React.FC = () => {
         >
           <FileNameTemplateInput />
         </Item>
+        <VariablePicker />
         <Item
           settingKey="sameFileSkip"
           label="跳过相同文件"
