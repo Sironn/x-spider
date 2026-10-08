@@ -46,7 +46,7 @@ jobs:
 
           parts[2] += 1;
           pkg.version = parts.join('.');
-          fs.writeFileSync(path, JSON.stringify(pkg, null, 2) + '\\n');
+          fs.writeFileSync(path, JSON.stringify(pkg, null, 2) + '\n');
           console.log(`Version: ${pkg.version}`);
           NODE
 
