@@ -8,6 +8,7 @@ import Joi from 'joi';
 import { SavePathSelector } from '../components/settings/SavePathSelector';
 import { Button, Input, Switch } from 'antd';
 import { FileNameTemplateInput } from '../components/settings/FileNameTemplateInput';
+import { VariablePicker } from '../components/settings/VariablePicker';
 import { showInFolder } from '../utils/shell';
 import { path } from '@tauri-apps/api';
 
@@ -34,7 +35,7 @@ export const Settings: React.FC = () => {
             return Joi.string()
               .pattern(
                 // eslint-disable-next-line
-                /^([^\\\/:\*\"<>\|]\\?)+$/,
+                /^([^\\/:\*\"<>\|]\?)+$/,
               )
               .message(
                 '文件夹名有误，请检查文件夹名是否正确，文件夹名不能包含以下字符：? * / \\ < > : " |',
@@ -57,7 +58,7 @@ export const Settings: React.FC = () => {
             return Joi.string()
               .pattern(
                 // eslint-disable-next-line
-                /^[^\\\/:\*\"<>\|]+$/,
+                /^[^\\/:\*\"<>\|]+$/,
               )
               .message(
                 '文件名有误，请检查文件名是否正确，文件名不能包含以下字符：? * / \\ < > : " |',
@@ -72,6 +73,7 @@ export const Settings: React.FC = () => {
         >
           <FileNameTemplateInput />
         </Item>
+        <VariablePicker />
         <Item
           settingKey="sameFileSkip"
           label="跳过相同文件"
@@ -109,21 +111,6 @@ export const Settings: React.FC = () => {
         </Item>
       </Section>
       <Section title="应用" name="app">
-        <Item
-          label="自动检查更新"
-          settingKey="autoCheckUpdate"
-          valuePropName="checked"
-        >
-          <Switch />
-        </Item>
-        <Item
-          label="接收预览版"
-          description="预览版更新更频繁，能获取到最新的特性，但不太稳定，可能会出现各种错误。"
-          settingKey="acceptPrerelease"
-          valuePropName="checked"
-        >
-          <Switch />
-        </Item>
         <Item
           label="记录日志文件"
           description="日志文件可能体积较大，建议软件运行出问题需要上报时再开启，开启后请重启软件。"

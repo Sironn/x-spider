@@ -28,8 +28,6 @@ export interface Settings_V2 {
     sameFileSkip: boolean;
   };
   app: {
-    autoCheckUpdate: boolean;
-    acceptPrerelease: boolean;
     writeLogs: boolean;
   };
 }
