@@ -95,7 +95,7 @@ export const Homepage: React.FC = () => {
                     type="link"
                     size="small"
                     onClick={clearSearchHistory}
-                    className="!p-0"
+                    className="!p-0 !text-sm"
                   >
                     清空
                     <span className="sr-only">历史记录</span>
@@ -109,6 +109,7 @@ export const Homepage: React.FC = () => {
                         disabled={userInfo.loading}
                         type="link"
                         size="small"
+                        className="!text-sm"
                         onClick={() => {
                           setKeyword(sn);
                           startSearch(sn);

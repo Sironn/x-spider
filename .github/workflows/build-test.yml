@@ -1,14 +1,23 @@
-name: build and windows
+name: Build Test
 
 on:
-  push:
-    branches:
-      - develop
   workflow_dispatch:
 
 jobs:
+  validate-branch:
+    name: Validate trigger branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure workflow is run from develop
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/develop" ]; then
+            echo "::error::Build Test can only be run from the develop branch."
+            exit 1
+          fi
+
   build-windows:
     name: Build Windows x64
+    needs: validate-branch
     runs-on: windows-latest
 
     steps:
@@ -53,6 +62,7 @@ jobs:
 
   build-macos:
     name: Build macOS ${{ matrix.arch }}
+    needs: validate-branch
     runs-on: ${{ matrix.runner }}
 
     strategy:

@@ -1,29 +1,39 @@
-name: auto release
+name: Auto Release
 
 on:
-  pull_request:
-    types:
-      - closed
-    branches:
-      - master
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: x-spider-auto-release
+  cancel-in-progress: false
+
 jobs:
+  validate-branch:
+    name: Validate trigger branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure workflow is run from develop
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/develop" ]; then
+            echo "::error::Auto Release can only be run from the develop branch."
+            exit 1
+          fi
+
   prepare-release:
-    name: Prepare release
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    name: Merge develop and prepare release
+    needs: validate-branch
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.version.outputs.version }}
+      version: ${{ steps.release.outputs.version }}
 
     steps:
-      - name: Checkout master
+      - name: Checkout develop
         uses: actions/checkout@v4
         with:
-          ref: master
+          ref: develop
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -31,9 +41,16 @@ jobs:
         with:
           node-version: 20
 
-      - name: Bump patch version
-        id: version
+      - name: Merge develop into master and bump patch version
+        id: release
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin master develop
+          git checkout -B master origin/master
+          git merge --no-ff origin/develop -m "chore: merge develop into master for release"
+
           node <<'NODE'
           const fs = require('fs');
           const path = 'package.json';
@@ -50,17 +67,12 @@ jobs:
           console.log(`Version: ${pkg.version}`);
           NODE
 
-          echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+          VERSION="$(node -p "require('./package.json').version")"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Commit version bump
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package.json
           git commit -m "chore: bump version to v${VERSION}"
-          git push origin HEAD:master
+          git push origin master
 
   build-windows:
     name: Build Windows x64
@@ -180,3 +192,45 @@ jobs:
             --target master \
             --title "X-Spider v${VERSION}" \
             --generate-notes
+
+  sync-version:
+    name: Sync version back to develop
+    needs: publish-release
+    if: needs.publish-release.result == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Sync only package version from master
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin master develop
+          git checkout -B develop origin/develop
+
+          MASTER_VERSION="$(git show origin/master:package.json | node -e "let data=''; process.stdin.on('data', chunk => data += chunk).on('end', () => console.log(JSON.parse(data).version))")"
+          CURRENT_VERSION="$(node -p "require('./package.json').version")"
+
+          if [ "$CURRENT_VERSION" = "$MASTER_VERSION" ]; then
+            echo "develop already has version $MASTER_VERSION; nothing to sync."
+            exit 0
+          fi
+
+          MASTER_VERSION="$MASTER_VERSION" node <<'NODE'
+          const fs = require('fs');
+          const path = 'package.json';
+          const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
+          pkg.version = process.env.MASTER_VERSION;
+          fs.writeFileSync(path, JSON.stringify(pkg, null, 2) + '\n');
+          NODE
+
+          git add package.json
+          git commit -m "chore: sync version to v${MASTER_VERSION}"
+          git push origin HEAD:develop
