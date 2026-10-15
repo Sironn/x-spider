@@ -51,7 +51,9 @@
       },
       "fs": {
         "all": true,
-        "scope": ["**"]
+        "scope": [
+          "**"
+        ]
       }
     },
     "bundle": {
@@ -83,7 +85,8 @@
         "height": 920,
         "minWidth": 800,
         "minHeight": 600,
-        "decorations": true
+        "decorations": true,
+        "center": true
       }
     ]
   }

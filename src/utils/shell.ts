@@ -1,4 +1,4 @@
-import { shell } from '@tauri-apps/api';
+import { path as tauriPath, shell } from '@tauri-apps/api';
 import { createCrossPlatformInvoker } from './cross-platform';
 
 export const showInFolder = createCrossPlatformInvoker<
@@ -9,5 +9,8 @@ export const showInFolder = createCrossPlatformInvoker<
       'explorer',
       isFile ? [`/select,`, ...path.split(' ')] : [...path.split(' ')],
     ).execute();
+  },
+  async macos(path: string, isFile = false) {
+    await shell.open(isFile ? await tauriPath.dirname(path) : path);
   },
 });

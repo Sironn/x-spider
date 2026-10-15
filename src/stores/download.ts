@@ -508,13 +508,13 @@ async function scheduleCreationTasks() {
     useDownloadStore.getState();
 
   if (R.isEmpty(creationTasks)) {
-    requestIdleCallback(scheduleCreationTasks);
+    setTimeout(scheduleCreationTasks, 50);
     return;
   }
 
   // Check if there was a creation task running
   if (creationTasks.find((task) => task.status === 'active')) {
-    requestIdleCallback(scheduleCreationTasks);
+    setTimeout(scheduleCreationTasks, 50);
     return;
   }
 
@@ -527,7 +527,7 @@ async function scheduleCreationTasks() {
   if (abortController.signal.aborted) {
     log().info('Aborted creation task, remove it', task);
     removeCreationTask(task.id);
-    requestIdleCallback(scheduleCreationTasks);
+    setTimeout(scheduleCreationTasks, 50);
     return;
   }
 
@@ -551,7 +551,7 @@ async function scheduleCreationTasks() {
     });
   }
 
-  requestIdleCallback(scheduleCreationTasks);
+  setTimeout(scheduleCreationTasks, 50);
 }
 
 scheduleCreationTasks();

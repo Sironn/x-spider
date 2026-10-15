@@ -111,14 +111,26 @@ pub async fn network_fetch(
 
 #[tauri::command]
 pub async fn network_get_system_proxy_url() -> Result<HashMap<String, String>, ()> {
-  let proxies = reqwest::get_system_proxy_map();
-  let mut mapped_proxies: HashMap<String, String> = HashMap::with_capacity(proxies.len());
+  let mut mapped_proxies = HashMap::new();
 
-  for (key, value) in proxies {
-    mapped_proxies.insert(key.clone(), match value {
-      reqwest::ProxyScheme::Http { host, .. } => host.to_string(),
-      reqwest::ProxyScheme::Https { host, .. } => host.to_string(),
-    });
+  // Official reqwest keeps system-proxy discovery internal, so expose the
+  // standard proxy environment variables for the existing UI command.
+  let http_proxy = std::env::var("HTTP_PROXY")
+    .or_else(|_| std::env::var("http_proxy"))
+    .ok();
+  let https_proxy = std::env::var("HTTPS_PROXY")
+    .or_else(|_| std::env::var("https_proxy"))
+    .ok();
+  let all_proxy = std::env::var("ALL_PROXY")
+    .or_else(|_| std::env::var("all_proxy"))
+    .ok();
+
+  if let Some(proxy) = http_proxy.or_else(|| all_proxy.clone()) {
+    mapped_proxies.insert("http".to_string(), proxy);
+  }
+
+  if let Some(proxy) = https_proxy.or(all_proxy) {
+    mapped_proxies.insert("https".to_string(), proxy);
   }
 
   Ok(mapped_proxies)

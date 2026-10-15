@@ -25,8 +25,9 @@ export const SavePathSelector: React.FC<SavePathSelectorProps> = ({
         <Button
           type="primary"
           onClick={async () => {
+            const defaultPath = value?.toString().trim();
             const result = await dialog.open({
-              defaultPath: value?.toString(),
+              ...(defaultPath ? { defaultPath } : {}),
               title: '选择保存路径',
               directory: true,
             });
