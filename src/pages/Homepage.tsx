@@ -77,11 +77,6 @@ export const Homepage: React.FC = () => {
               >
                 加载
               </Button>
-              {userInfo.loading && (
-                <span className="sr-only" role="status">
-                  加载用户信息中
-                </span>
-              )}
             </Space.Compact>
             {searchHistory.length > 0 && (
               <section
@@ -98,7 +93,6 @@ export const Homepage: React.FC = () => {
                     className="!p-0 !text-sm"
                   >
                     清空
-                    <span className="sr-only">历史记录</span>
                   </Button>
                   ） ：
                 </span>
@@ -115,7 +109,6 @@ export const Homepage: React.FC = () => {
                           startSearch(sn);
                         }}
                       >
-                        <span className="sr-only">搜索</span>
                         {sn}
                       </Button>
                     </li>
@@ -131,10 +124,6 @@ export const Homepage: React.FC = () => {
                 aria-label="用户信息"
                 className="bg-white border-[1px] border-gray-300 rounded-md mt-4"
               >
-                <span className="sr-only" role="status">
-                  用户信息加载完成，当前搜索用户：
-                  {userInfo.data.name || '未知用户'}
-                </span>
                 <a
                   title="跳转到主页"
                   className="flex items-center p-4 focus:outline !outline-4 !outline-cyan-200"

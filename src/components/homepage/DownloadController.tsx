@@ -77,6 +77,7 @@ export const DownloadController: React.FC = () => {
               },
             ]}
             disabledDate={(cur) => cur && cur > dayjs().endOf('day')}
+            allowEmpty={[true, true]}
           />
         </Form.Item>
         <Form.Item name="mediaTypes" label="媒体类型">

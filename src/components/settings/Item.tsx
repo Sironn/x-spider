@@ -34,7 +34,6 @@ export const Item: React.FC<ItemProps> = ({
   const [errorMessage, setErrorMessage] = useState('');
   const uniqueId = `settings-${context.name}-${settingKey}`;
   const labelId = `label-${uniqueId}`;
-  const descriptionId = `description-${uniqueId}`;
 
   const debouncedTrySetValue = useDebounceFn(
     async (val) => {
@@ -67,23 +66,17 @@ export const Item: React.FC<ItemProps> = ({
           {label}
         </label>
         {description && (
-          <>
-            <Tooltip title={description}>
-              <QuestionCircleOutlined
-                className="ml-1 text-ant-color-primary"
-                aria-hidden
-              />
-            </Tooltip>
-            <p className="sr-only" id={descriptionId} role="tooltip">
-              {description}
-            </p>
-          </>
+          <Tooltip title={description}>
+            <QuestionCircleOutlined
+              className="ml-1 text-ant-color-primary"
+              aria-hidden
+            />
+          </Tooltip>
         )}
       </div>
       <FormItem noStyle validateStatus={errorMessage ? 'error' : 'success'}>
         <children.type
           aria-labelledby={labelId}
-          aria-describedby={descriptionId}
           id={uniqueId}
           onChange={async (e: any) => {
             const val = e?.target ? e.target[valuePropName] : e;

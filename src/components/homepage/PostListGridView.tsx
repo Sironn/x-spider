@@ -69,17 +69,13 @@ export const PostListGridView: React.FC = () => {
       requestFn={requestFn}
       className="overflow-y-auto pb-10 overflow-hidden h-[inherit]"
     >
-      {postList.loading && !postList.list ? (
+      {postList.loading && !postList.list && (
         <div role="status">
           <LoadingOutlined
             className="text-ant-color-primary mr-2"
             aria-hidden
           />
           加载图片列表中...
-        </div>
-      ) : (
-        <div role="status" className="sr-only">
-          列表加载完成
         </div>
       )}
       <ul className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-2">
@@ -138,7 +134,6 @@ export const PostListGridView: React.FC = () => {
                 />
                 {media.type === MediaType.Video && (
                   <span className="block absolute right-2 bottom-2 text-white bg-[rgba(0,0,0,0.6)] rounded-sm px-[0.3rem] text-sm">
-                    <span className="sr-only">视频时长：</span>
                     {media.videoInfo?.duration
                       ? dayjs.duration(media.videoInfo.duration).format('mm:ss')
                       : '视频'}
@@ -181,7 +176,6 @@ export const PostListGridView: React.FC = () => {
               className="text-6xl text-ant-color-primary"
               aria-hidden
             />
-            <span className="sr-only">加载更多图片中</span>
           </li>
         )}
       </ul>

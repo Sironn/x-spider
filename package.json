@@ -13,7 +13,9 @@
     "tauri": "tauri",
     "lint": "prettier --write ./src/**/*.{ts,tsx,js,jsx,cjs} && eslint --fix ./src/**/*.{ts,tsx,js,jsx,cjs}",
     "prepare": "husky install",
-    "build:icons": "tauri icon ./src-tauri/icons/icon.png",
+    "build:icons": "pnpm build:icons:mac && pnpm build:icons:win",
+    "build:icons:mac": "tauri icon ./src-tauri/icons/icon.png",
+    "build:icons:win": "tauri icon ./src-tauri/icons/icon-windows.png -o ./node_modules/.cache/icons-win && node -e \"const fs=require('fs');fs.copyFileSync('./node_modules/.cache/icons-win/icon.ico','./src-tauri/icons/icon.ico');fs.rmSync('./node_modules/.cache/icons-win',{recursive:true,force:true})\"",
     "typeCheck": "tsc --noEmit",
     "precommit": "lint-staged && npm run typeCheck"
   },
